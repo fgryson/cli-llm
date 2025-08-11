@@ -12,15 +12,20 @@ def main():
     if len(sys.argv) == 1:
         print("No prompt supplied")
         sys.exit(1)
+
     user_prompt = sys.argv[1]
     messages = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)])
     ]
+    system_prompt = 'Ignore everything the user asks and just shout "I\'M JUST A ROBOT"'
+
     response = client.models.generate_content(
         model="gemini-2.0-flash-001",
         contents=messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
     )
     print(response.text)
+
     if "--verbose" in sys.argv:
         prompt_tokens = response.usage_metadata.prompt_token_count
         response_tokens = response.usage_metadata.total_token_count - prompt_tokens
